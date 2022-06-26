@@ -1,4 +1,4 @@
-package com.example.shopping.domain.repositories
+package com.example.shopping.domain.repository
 
 import com.example.shopping.domain.models.ShopItem
 
