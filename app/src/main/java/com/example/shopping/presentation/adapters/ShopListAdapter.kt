@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shopping.R
 import com.example.shopping.databinding.ItemShopDisabledBinding
 import com.example.shopping.databinding.ItemShopEnabledBinding
 import com.example.shopping.domain.models.ShopItem
+import com.example.shopping.presentation.ShopListDiffCallback
 import java.lang.RuntimeException
 
 class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
@@ -25,8 +27,10 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     var shopList = listOf<ShopItem>()
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
+            val shopListDiffCallback = ShopListDiffCallback(shopList, value)
+            val diffResult = DiffUtil.calculateDiff(shopListDiffCallback)
+            diffResult.dispatchUpdatesTo(this)
             field = value
-            notifyDataSetChanged()
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
