@@ -4,15 +4,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.example.shopping.R
 import com.example.shopping.domain.models.ShopItem
 import com.example.shopping.presentation.ShopItemDiffCallback
 import com.example.shopping.presentation.viewholders.ShopItemViewHolder
 import java.lang.RuntimeException
 
-class ShopListAdapter : ListAdapter<ShopItem, ShopItemViewHolder>(ShopItemDiffCallback()) {
+class ShopListAdapter : ListAdapter<ShopItem, ShopItemViewHolder>(
+    AsyncDifferConfig.Builder(ShopItemDiffCallback()).build()
+) {
 
     lateinit var onShopItemLongClick: (ShopItem) -> Unit
     lateinit var onShopItemClick: (ShopItem) -> Unit
