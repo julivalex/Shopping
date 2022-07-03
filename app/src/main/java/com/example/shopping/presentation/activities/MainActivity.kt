@@ -6,48 +6,81 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.example.shopping.R
 import com.example.shopping.databinding.ActivityMainBinding
 import com.example.shopping.databinding.ItemShopDisabledBinding
 import com.example.shopping.databinding.ItemShopEnabledBinding
 import com.example.shopping.domain.models.ShopItem
+import com.example.shopping.presentation.adapters.ShopListAdapter
 import com.example.shopping.presentation.viewmodels.MainViewModel
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
     private lateinit var viewModel: MainViewModel
+
+    private val shopListAdapter: ShopListAdapter = ShopListAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.shopList.observe(this) {
-            showList(it)
+            shopListAdapter.shopList = it
+        }
+        setupRecyclerView()
+        setupLongClickListener()
+        setupClickListener()
+        setupSwipeListener()
+    }
+
+    private fun setupClickListener() {
+        shopListAdapter.onShopItemClick = {
+            Log.d("rLog", it.toString())
         }
     }
 
-    private fun showList(list: List<ShopItem>) {
-        binding.container.removeAllViews()
-        for (shopItem in list) {
-            val layoutId = if (shopItem.enabled) {
-                R.layout.item_shop_enabled
-            } else {
-                R.layout.item_shop_disabled
-            }
-            val view = LayoutInflater.from(this).inflate(layoutId, binding.container, false)
-            val tvName = view.findViewById<TextView>(R.id.tv_name)
-            val tvCount = view.findViewById<TextView>(R.id.tv_count)
-            tvName.text = shopItem.name
-            tvCount.text = shopItem.count.toString()
-            view.setOnLongClickListener {
-                viewModel.changeEnabledState(shopItem)
-                true
-            }
-            binding.container.addView(view)
+    private fun setupLongClickListener() {
+        shopListAdapter.onShopItemLongClick = { item ->
+            viewModel.changeEnabledState(item)
         }
+    }
+
+    private fun setupRecyclerView() {
+        with(binding.shopRecyclerView) {
+            adapter = shopListAdapter
+            recycledViewPool.setMaxRecycledViews(
+                ShopListAdapter.VIEW_TYPE_ENABLED,
+                ShopListAdapter.MAX_POOL_SIZE
+            )
+            recycledViewPool.setMaxRecycledViews(
+                ShopListAdapter.VIEW_TYPE_DISABLED,
+                ShopListAdapter.MAX_POOL_SIZE
+            )
+        }
+    }
+
+    private fun setupSwipeListener() {
+        val callback = object : ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ) = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val item = shopListAdapter.shopList[viewHolder.adapterPosition]
+                viewModel.deleteShopItem(item)
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(callback)
+        itemTouchHelper.attachToRecyclerView(binding.shopRecyclerView)
     }
 }
