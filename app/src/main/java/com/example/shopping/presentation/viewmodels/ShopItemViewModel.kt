@@ -28,6 +28,10 @@ class ShopItemViewModel : ViewModel() {
     val shopItem: LiveData<ShopItem>
         get() = _shopItem
 
+    private val _shouldCloseScreen = MutableLiveData<Unit>()
+    val shouldCloseScreen: LiveData<Unit>
+        get() = _shouldCloseScreen
+
     fun getShopItem(shopItemId: Int) {
         val item = getShopItemUseCase.getShopItem(shopItemId)
         _shopItem.value = item
@@ -40,6 +44,7 @@ class ShopItemViewModel : ViewModel() {
         if (validFields) {
             val shopItem = ShopItem(name = name, count = count, enabled = true)
             addShopItemUseCase.addShopItem(shopItem)
+            finish()
         }
     }
 
@@ -51,6 +56,7 @@ class ShopItemViewModel : ViewModel() {
             _shopItem.value?.let {
                 val item = it.copy(name = name, count = count)
                 editShopItemUseCase.editShopItem(item)
+                finish()
             }
         }
     }
@@ -86,6 +92,10 @@ class ShopItemViewModel : ViewModel() {
 
     private fun resetErrorInputCount() {
         _errorInputCount.value = false
+    }
+
+    private fun finish() {
+        _shouldCloseScreen.value = Unit
     }
 
     companion object {
