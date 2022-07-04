@@ -1,18 +1,11 @@
 package com.example.shopping.presentation.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.shopping.R
 import com.example.shopping.databinding.ActivityMainBinding
-import com.example.shopping.databinding.ItemShopDisabledBinding
-import com.example.shopping.databinding.ItemShopEnabledBinding
-import com.example.shopping.domain.models.ShopItem
 import com.example.shopping.presentation.adapters.ShopListAdapter
 import com.example.shopping.presentation.viewmodels.MainViewModel
 
@@ -33,14 +26,24 @@ class MainActivity : AppCompatActivity() {
             shopListAdapter.submitList(it)
         }
         setupRecyclerView()
+        setupFloatingClickListener()
         setupLongClickListener()
         setupClickListener()
         setupSwipeListener()
+
+    }
+
+    private fun setupFloatingClickListener() {
+        binding.shopFloatingActionButton.setOnClickListener {
+            val intent = ShopItemActivity.newIntentAddItem(context = this)
+            startActivity(intent)
+        }
     }
 
     private fun setupClickListener() {
         shopListAdapter.onShopItemClick = {
-            Log.d("rLog", it.toString())
+            val intent = ShopItemActivity.newIntentEditItem(context = this, shopItemId = it.id)
+            startActivity(intent)
         }
     }
 

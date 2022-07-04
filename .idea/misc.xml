@@ -5,9 +5,11 @@
       <map>
         <entry key="app/src/main/res/drawable/ic_add.xml" value="0.154" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.17135416666666667" />
-        <entry key="app/src/main/res/layout/activity_shop_item.xml" value="0.14583333333333334" />
+        <entry key="app/src/main/res/layout/activity_shop_item.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_shop_disabled.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_shop_enabled.xml" value="0.25" />
+        <entry key="app/src/main/res/xml/backup_rules.xml" value="0.1" />
+        <entry key="app/src/main/res/xml/data_extraction_rules.xml" value="0.1" />
       </map>
     </option>
   </component>
