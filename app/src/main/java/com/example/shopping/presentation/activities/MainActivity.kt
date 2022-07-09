@@ -13,7 +13,7 @@ import com.example.shopping.presentation.fragments.ShopItemFragment
 import com.example.shopping.presentation.viewmodels.MainViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListener {
 
     private lateinit var viewModel: MainViewModel
 
@@ -117,5 +117,9 @@ class MainActivity : AppCompatActivity() {
         }
         val itemTouchHelper = ItemTouchHelper(callback)
         itemTouchHelper.attachToRecyclerView(shopRecyclerView)
+    }
+
+    override fun onEditingFinish() {
+        onBackPressed()
     }
 }

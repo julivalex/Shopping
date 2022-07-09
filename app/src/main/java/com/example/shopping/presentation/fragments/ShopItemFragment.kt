@@ -1,7 +1,7 @@
 package com.example.shopping.presentation.fragments
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +18,7 @@ import com.google.android.material.textfield.TextInputLayout
 class ShopItemFragment : Fragment() {
 
     private lateinit var viewModel: ShopItemViewModel
+    private lateinit var onEditingFinishListener: OnEditingFinishListener
 
     private lateinit var tilName: TextInputLayout
     private lateinit var tilCount: TextInputLayout
@@ -28,9 +29,17 @@ class ShopItemFragment : Fragment() {
     private var screenMode: String = MODE_UNKNOWN
     private var shopItemId: Int = ShopItem.UNDEFINED_ID
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnEditingFinishListener) {
+            onEditingFinishListener = context
+        } else {
+            throw RuntimeException("Activity must implement listener OnEditingFinishListener")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("ShopItemFragment", "onCreate() = $savedInstanceState")
         parseInstance()
     }
 
@@ -87,7 +96,7 @@ class ShopItemFragment : Fragment() {
             tilCount.error = if (it) getString(R.string.error_input_count) else null
         }
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
-            requireActivity().onBackPressed()
+            onEditingFinishListener.onEditingFinish()
         }
     }
 
@@ -122,6 +131,10 @@ class ShopItemFragment : Fragment() {
         etCount.textChanged {
             viewModel.resetErrorInputCount()
         }
+    }
+
+    interface OnEditingFinishListener {
+        fun onEditingFinish()
     }
 
     companion object {

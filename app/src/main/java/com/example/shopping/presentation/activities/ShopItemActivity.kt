@@ -9,7 +9,7 @@ import com.example.shopping.databinding.ActivityShopItemBinding
 import com.example.shopping.domain.models.ShopItem
 import com.example.shopping.presentation.fragments.ShopItemFragment
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListener {
 
     private lateinit var binding: ActivityShopItemBinding
 
@@ -74,5 +74,9 @@ class ShopItemActivity : AppCompatActivity() {
             intent.putExtra(EXTRA_SCREEN_MODE, MODE_EDIT)
             return intent
         }
+    }
+
+    override fun onEditingFinish() {
+        finish()
     }
 }
