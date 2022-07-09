@@ -4,17 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.shopping.R
 import com.example.shopping.databinding.ActivityShopItemBinding
 import com.example.shopping.domain.models.ShopItem
-import com.example.shopping.presentation.extensions.textChanged
-import com.example.shopping.presentation.viewmodels.ShopItemViewModel
+import com.example.shopping.presentation.fragments.ShopItemFragment
 
 class ShopItemActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityShopItemBinding
-    private lateinit var viewModel: ShopItemViewModel
 
     private var screenMode = MODE_UNKNOWN
     private var shopItemId = ShopItem.UNDEFINED_ID
@@ -24,46 +21,7 @@ class ShopItemActivity : AppCompatActivity() {
         binding = ActivityShopItemBinding.inflate(layoutInflater)
         setContentView(binding.root)
         parseIntent()
-        viewModel = ViewModelProvider(this).get(ShopItemViewModel::class.java)
         launchRightMode()
-        setupObservers()
-        addTestChangeListeners()
-    }
-
-    private fun setupObservers() {
-        viewModel.errorInputName.observe(this) {
-            binding.tilName.error = if (it) getString(R.string.error_input_name) else null
-        }
-        viewModel.errorInputCount.observe(this) {
-            binding.tilCount.error = if (it) getString(R.string.error_input_count) else null
-        }
-        viewModel.shouldCloseScreen.observe(this) {
-            finish()
-        }
-    }
-
-    private fun launchRightMode() {
-        when (screenMode) {
-            MODE_ADD -> launchAddMode()
-            MODE_EDIT -> launchEditMode()
-        }
-    }
-
-    private fun launchAddMode() {
-        binding.saveButton.setOnClickListener {
-            viewModel.addShopItem(binding.etName.text.toString(), binding.etCount.text.toString())
-        }
-    }
-
-    private fun launchEditMode() {
-        viewModel.getShopItem(shopItemId)
-        viewModel.shopItem.observe(this) {
-            binding.etName.setText(it.name)
-            binding.etCount.setText(it.count.toString())
-        }
-        binding.saveButton.setOnClickListener {
-            viewModel.editShopItem(binding.etName.text.toString(), binding.etCount.text.toString())
-        }
     }
 
     private fun parseIntent() {
@@ -83,13 +41,16 @@ class ShopItemActivity : AppCompatActivity() {
         }
     }
 
-    private fun addTestChangeListeners() {
-        binding.etName.textChanged {
-            viewModel.resetErrorInputName()
+    private fun launchRightMode() {
+        val fragment = when (screenMode) {
+            MODE_ADD -> ShopItemFragment.newInstanceAddItem()
+            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(shopItemId)
+            else -> throw RuntimeException("Unknown screen mode $screenMode")
         }
-        binding.etCount.textChanged {
-            viewModel.resetErrorInputCount()
-        }
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.shop_item_container, fragment)
+            .commit()
     }
 
     companion object {
