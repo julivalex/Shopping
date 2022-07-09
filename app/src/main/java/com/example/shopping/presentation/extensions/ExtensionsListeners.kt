@@ -16,3 +16,4 @@ fun TextInputEditText.textChanged(check: () -> Unit) {
         override fun afterTextChanged(p0: Editable?) {}
     })
 }
+

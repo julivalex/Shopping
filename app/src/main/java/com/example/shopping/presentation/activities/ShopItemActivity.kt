@@ -21,7 +21,9 @@ class ShopItemActivity : AppCompatActivity() {
         binding = ActivityShopItemBinding.inflate(layoutInflater)
         setContentView(binding.root)
         parseIntent()
-        launchRightMode()
+        if (savedInstanceState == null) {
+            launchRightMode()
+        }
     }
 
     private fun parseIntent() {
@@ -49,7 +51,7 @@ class ShopItemActivity : AppCompatActivity() {
         }
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.shop_item_container, fragment)
+            .replace(R.id.shopItemContainer, fragment)
             .commit()
     }
 

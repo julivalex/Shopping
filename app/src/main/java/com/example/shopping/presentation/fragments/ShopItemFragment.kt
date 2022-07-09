@@ -1,6 +1,7 @@
 package com.example.shopping.presentation.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,7 @@ class ShopItemFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("ShopItemFragment", "onCreate() = $savedInstanceState")
         parseInstance()
     }
 
