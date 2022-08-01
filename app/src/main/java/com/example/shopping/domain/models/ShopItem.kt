@@ -1,13 +1,13 @@
 package com.example.shopping.domain.models
 
 data class ShopItem(
+    val id: Int = UNDEFINED_ID,
     val name: String,
     val count: Int,
-    val enabled: Boolean,
-    val id: Int = UNDEFINED_ID
+    val enabled: Boolean
 ) {
     companion object {
-        const val UNDEFINED_ID = -1
+        const val UNDEFINED_ID = 0
     }
 }
 

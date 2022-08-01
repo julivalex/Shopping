@@ -34,12 +34,6 @@ class ShopListRepositoryImpl(
     }
 
     override fun getShopList(): LiveData<List<ShopItem>> {
-//        return MediatorLiveData<List<ShopItem>>().apply {
-//            this.addSource(shopListDao.getShopList()) {
-//                value = mapper.mapList(it)
-//            }
-//        }
-
         return Transformations.map(shopListDao.getShopList()) {
             mapper.mapList(it)
         }
