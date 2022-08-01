@@ -1,6 +1,5 @@
 package com.example.shopping.presentation.viewmodels
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.shopping.data.repository.ShopListRepositoryImpl
 import com.example.shopping.domain.models.ShopItem
