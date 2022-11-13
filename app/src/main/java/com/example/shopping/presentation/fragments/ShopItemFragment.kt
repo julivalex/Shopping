@@ -6,20 +6,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.shopping.R
+import com.example.shopping.ShoppingListApp
+import com.example.shopping.di.ViewModelFactory
 import com.example.shopping.domain.models.ShopItem
 import com.example.shopping.presentation.extensions.textChanged
+import com.example.shopping.presentation.viewmodels.MainViewModel
 import com.example.shopping.presentation.viewmodels.ShopItemViewModel
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import javax.inject.Inject
 
 class ShopItemFragment : Fragment() {
 
-    private lateinit var viewModel: ShopItemViewModel
-    private lateinit var onEditingFinishListener: OnEditingFinishListener
+    @Inject
+    lateinit var factory: ViewModelFactory
 
+    private val viewModel by viewModels<ShopItemViewModel> { factory }
+
+    private lateinit var onEditingFinishListener: OnEditingFinishListener
     private lateinit var tilName: TextInputLayout
     private lateinit var tilCount: TextInputLayout
     private lateinit var etName: TextInputEditText
@@ -30,6 +39,7 @@ class ShopItemFragment : Fragment() {
     private var shopItemId: Int = ShopItem.UNDEFINED_ID
 
     override fun onAttach(context: Context) {
+        (requireActivity().application as ShoppingListApp).component.inject(this)
         super.onAttach(context)
         if (context is OnEditingFinishListener) {
             onEditingFinishListener = context
@@ -54,7 +64,6 @@ class ShopItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews(view)
-        viewModel = ViewModelProvider(this).get(ShopItemViewModel::class.java)
         launchRightMode()
         setupObservers()
         addTestChangeListeners()

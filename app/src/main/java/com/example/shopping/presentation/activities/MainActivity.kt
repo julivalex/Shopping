@@ -1,6 +1,7 @@
 package com.example.shopping.presentation.activities
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
@@ -8,14 +9,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shopping.R
+import com.example.shopping.ShoppingListApp
+import com.example.shopping.di.ViewModelFactory
 import com.example.shopping.presentation.adapters.ShopListAdapter
 import com.example.shopping.presentation.fragments.ShopItemFragment
 import com.example.shopping.presentation.viewmodels.MainViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListener {
 
-    private lateinit var viewModel: MainViewModel
+    @Inject
+    lateinit var factory: ViewModelFactory
+
+    private val viewModel by viewModels<MainViewModel> { factory }
 
     private val shopListAdapter: ShopListAdapter = ShopListAdapter()
 
@@ -24,9 +31,9 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListen
     private var shopItemContainerLand: FragmentContainerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (application as ShoppingListApp).component.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.shopList.observe(this) {
             shopListAdapter.submitList(it)
         }
