@@ -1,11 +1,11 @@
 package com.example.shopping.presentation.activities
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shopping.R
@@ -43,6 +43,14 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListen
         setupLongClickListener()
         setupClickListener()
         setupSwipeListener()
+
+        contentResolver.query(
+            Uri.parse("content://com.example.shopping/shop_items"),
+            null,
+            null,
+            null,
+            null
+        )
     }
 
     private fun setupViews() {
