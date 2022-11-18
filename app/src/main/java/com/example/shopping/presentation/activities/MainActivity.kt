@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListen
         setupSwipeListener()
 
         contentResolver.query(
-            Uri.parse("content://com.example.shopping/shop_items"),
+            Uri.parse("content://com.example.shopping/shop_items/3"),
             null,
             null,
             null,
