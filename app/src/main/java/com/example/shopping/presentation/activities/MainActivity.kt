@@ -1,7 +1,9 @@
 package com.example.shopping.presentation.activities
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -11,11 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.shopping.R
 import com.example.shopping.ShoppingListApp
 import com.example.shopping.di.ViewModelFactory
+import com.example.shopping.domain.models.ShopItem
 import com.example.shopping.presentation.adapters.ShopListAdapter
 import com.example.shopping.presentation.fragments.ShopItemFragment
 import com.example.shopping.presentation.viewmodels.MainViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import javax.inject.Inject
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListener {
 
@@ -44,13 +48,30 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListen
         setupClickListener()
         setupSwipeListener()
 
-        contentResolver.query(
-            Uri.parse("content://com.example.shopping/shop_items"),
-            null,
-            null,
-            null,
-            null
-        )
+        thread {
+            val cursor = contentResolver.query(
+                Uri.parse("content://com.example.shopping/shop_items"),
+                null,
+                null,
+                null,
+                null
+            )
+            while (cursor?.moveToNext() == true) {
+                val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+                val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
+                val count = cursor.getInt(cursor.getColumnIndexOrThrow("count"))
+                val enabled = cursor.getInt(cursor.getColumnIndexOrThrow("enabled")) > 0
+
+                val shopItem = ShopItem(
+                    id = id,
+                    name = name,
+                    count = count,
+                    enabled = enabled
+                )
+                Log.d("MainActivity", shopItem.toString())
+            }
+            cursor?.close()
+        }
     }
 
     private fun setupViews() {
