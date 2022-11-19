@@ -12,7 +12,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlin.coroutines.coroutineContext
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -23,8 +22,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val editShopItemUseCase = EditShopItemUseCase(repository)
 
     val shopList = getShopListUseCase.getShopList()
-
-    private val scope = CoroutineScope(Dispatchers.IO)
 
     fun deleteShopItem(item: ShopItem) {
         viewModelScope.launch {
@@ -37,10 +34,5 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             val newItem = item.copy(enabled = !item.enabled)
             editShopItemUseCase.editShopItem(newItem)
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        scope.cancel()
     }
 }
